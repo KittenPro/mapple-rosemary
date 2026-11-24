@@ -1,0 +1,6 @@
+# Boot arguments for the first boots, read-only steps first. Nothing runs without its argument; a value ending in ? is not
+# derivable from the trees (see BRIEF.md for the probe that settles it).
+cpus=8	# cores in /cpus
+mp_ufsroot=xnusys	# our partition's name (the convention); it must exist in the GPT first
+mp_ufslun=2	# BoardConfig names the system partitions sd<letter>N
+mp_ufs=probe?	# read the controller as LK leaves it before any write path is on

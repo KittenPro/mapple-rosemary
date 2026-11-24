@@ -1,0 +1,4 @@
+# defconfig for the Redmi Note 10S (rosemary, MediaTek MT6785): the common kernel's configuration, the SoC's layer and this phone's own.
+#include common_defconfig
+#include mt6785.config
+#include rosemary.config

@@ -1,0 +1,5 @@
+tree/
+out/
+*.o
+*.bin
+*.img

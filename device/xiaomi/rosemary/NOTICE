@@ -1,0 +1,8 @@
+xnu_device_xiaomi_rosemary -- the Redmi Note 10S (rosemary, MediaTek Helio G95 / MT6785) for Open Mapple
+
+Licences
+  everything in this repository    MIT (LICENSE)
+
+This repository holds the phone's configuration, not a kernel. The SoC's drivers, when a
+run shows they are needed, live in kernel/mediatek/mt6785 under the Apple Public Source
+License 2.0. Nothing of Apple's and nothing of Xiaomi's firmware is kept here.

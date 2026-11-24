@@ -1,0 +1,9 @@
+xnu_kernel_mediatek_mt6785 -- the MT6785 layer of Open Mapple's kernel
+
+Licences
+  files built into Apple's XNU    Apple Public Source License 2.0 (LICENSE.APSL)
+  everything else                 MIT (LICENSE)
+
+No third-party code is copied here. Register addresses are read from the phone and from
+public sources and named where they are used. Nothing of Apple's and nothing of the
+vendor's belongs in this repository.
