@@ -1,48 +1,15 @@
-name: build
+name: kernel
 
 on:
   push:
-  pull_request:
   workflow_dispatch:
 
 jobs:
-  # The loader, the shim and the installer. Linux and the Mac both run this.
-  # mka itself is not invoked: it stops unless Xcode 15.4's iig is present, and
-  # GitHub retired the macos-14 image that carried Xcode 15.4 (2 November 2026).
-  portable:
-    name: loader and shim (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-24.04, macos-15]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: tools
-        run: |
-          if [ "$(uname)" = Darwin ]; then
-            brew install llvm zig
-            echo "$(brew --prefix llvm)/bin" >> "$GITHUB_PATH"
-          else
-            sudo apt-get update
-            sudo apt-get install -y clang lld zig python3
-          fi
-
-      - name: build
-        run: bash ci/build.sh
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: rosemary-${{ matrix.os }}
-          path: out/ci/
-
-  # Their kernel build, on the Mac runner that still exists. Xcode 15.4 is gone
-  # with macos-14; this uses whichever installed Xcode still has iig, and downloads
-  # the Kernel Debug Kit the way darwin-xnu-build does (no Apple login).
+  # Loader, shim and mapple-install build on the Linux host. This job is only
+  # what that host cannot build: their mka kernel, which stops without Xcode's
+  # iig and the Kernel Debug Kit.
   kernel:
     name: kernel
-    if: github.event_name == 'workflow_dispatch'
     runs-on: macos-15
     timeout-minutes: 180
     steps:
@@ -66,9 +33,10 @@ jobs:
           fi
           echo "XCODE15_DEVELOPER_DIR=$xcode" >> "$GITHUB_ENV"
           echo "DEVELOPER_DIR=$xcode" >> "$GITHUB_ENV"
+          echo "using $xcode"
 
       - name: tools
-        run: brew install llvm zig jq
+        run: brew install jq
 
       - name: tree
         run: bash ci/assemble.sh "$RUNNER_TEMP/tree"
@@ -90,3 +58,9 @@ jobs:
           . build/envsetup.sh
           lunch mapple_rosemary-userdebug
           mka kernel
+
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: kernel
+          path: ${{ runner.temp }}/tree/out/target/product/rosemary/kernel

@@ -8,15 +8,12 @@ image (2 November 2026), which was the last one that shipped Xcode 15.4. This wo
 uses `macos-15` and, for the loader and the shim, does not call `mka` at all: those two
 are freestanding and build with clang and `ld.lld` on Linux too.
 
-What a push builds, on `ubuntu-24.04` and `macos-15`:
+A push builds only the kernel, on `macos-15`. The loader, the shim and `mapple-install`
+build on the Linux host (`ci/build.sh`) and are not repeated there.
 
-- `mtkloader.bin`
-- the rosemary shim (`shim.Image`)
-- `mapple-install`, including the AVB-tail check
-
-The kernel job is manual (`workflow_dispatch`). Their MediaTek patches compile only for
-`MACHINE_CONFIG=MT6781`, so that job builds the common kernel under that name. It is not
-a rosemary kernel yet.
+Their MediaTek patches compile only for `MACHINE_CONFIG=MT6781`, so the job builds the
+common kernel under that name. It is not a rosemary board config yet. Xcode 15.4 left
+with the retired `macos-14` image; the job uses whichever Xcode on `macos-15` still has `iig`.
 
 `ci/assemble.sh` clones the Open Mapple repositories and lays this port over them.
 Nothing of Apple's and no phone firmware is in this repository.
